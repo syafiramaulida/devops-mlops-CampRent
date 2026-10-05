@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CampRent - Dashboard User</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="../css/user.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     NAVBAR
+========================================== -->
+
+<nav class="navbar">
+
+    <div class="navbar-logo">
+
+        <h2>CampRent</h2>
+
+    </div>
+
+
+    <div class="navbar-menu">
+
+        <a href="index.html" class="active">
+            Home
+        </a>
+
+        <a href="booking.html">
+            Booking
+        </a>
+
+        <a href="history.html">
+            Riwayat
+        </a>
+
+        <button onclick="logout()" class="btn-logout">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==========================================
+     MAIN
+========================================== -->
+
+<main class="user-container">
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome-section">
+
+        <div>
+
+            <p class="welcome-small">
+                Selamat datang,
+            </p>
+
+            <h1 id="userName">
+                User
+            </h1>
+
+            <p>
+                Temukan paket camping yang sesuai
+                dengan kebutuhanmu.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ======================================
+         PAKET CAMPING
+    ======================================= -->
+
+    <section class="package-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Paket Camping
+                </h2>
+
+                <p>
+                    Pilih paket camping yang kamu inginkan.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTAINER PAKET -->
+
+        <div
+            id="packageList"
+            class="package-grid">
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ==========================================
+     JAVASCRIPT
+========================================== -->
+
+<script src="../js/data.js"></script>
+
+<script src="../js/user.js"></script>
+
+
+</body>
+
+</html>
