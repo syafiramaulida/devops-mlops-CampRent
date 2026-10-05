@@ -3,5 +3,5 @@ CampRent adalah sebuah prototype sistem informasi reservasi camping yang diranca
 Anggota Kelompok
 1.	Syafira Maulida Najah - 23.01.53.0036 - GitHub: [syafiramaulida]
 2.	Dewi Ayu Anjani – 23.01.53.0008 - GitHub: [Dewiayuanjani]
-3.	Muhammad Umar Al- - NIM - GitHub: [username GitHub]
+3.	Muhammad Umar Al-Faruq - NIM - GitHub: [username GitHub]
 4.	Audri Kirana Dwi P. – 23.01.53.0023 - GitHub: [audriikirana]
