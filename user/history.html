@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CampRent - Riwayat Booking</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/user.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="navbar-logo">
+
+        <h2>CampRent</h2>
+
+    </div>
+
+
+    <div class="navbar-menu">
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="booking.html">
+            Booking
+        </a>
+
+        <a
+            href="history.html"
+            class="active"
+        >
+            Riwayat
+        </a>
+
+        <button
+            onclick="logout()"
+            class="btn-logout"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<main class="user-container">
+
+    <section>
+
+        <h1>
+            Riwayat Booking
+        </h1>
+
+        <p style="color:#777; margin:10px 0 30px;">
+            Daftar reservasi camping yang pernah kamu buat.
+        </p>
+
+
+        <div id="historyList">
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<script src="../js/data.js"></script>
+
+<script src="../js/user.js"></script>
+
+
+<script>
+
+function displayHistory() {
+
+    const historyList =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    const bookings =
+        JSON.parse(
+            localStorage.getItem(
+                "camprent_bookings"
+            )
+        ) || [];
+
+
+    const myBookings =
+        bookings.filter(
+            function(item) {
+
+                return (
+                    item.userId ===
+                    currentUser.id
+                );
+
+            }
+        );
+
+
+    if (myBookings.length === 0) {
+
+        historyList.innerHTML = `
+
+            <div class="package-card">
+
+                <div class="package-content">
+
+                    <h3>
+                        Belum Ada Booking
+                    </h3>
+
+                    <p class="package-description">
+
+                        Kamu belum memiliki
+                        riwayat booking.
+
+                    </p>
+
+                    <br>
+
+                    <a
+                        href="index.html"
+                        class="btn-book"
+                        style="
+                            display:block;
+                            text-align:center;
+                            text-decoration:none;
+                        "
+                    >
+                        Cari Paket Camping
+                    </a>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    historyList.innerHTML = "";
+
+
+    myBookings
+        .slice()
+        .reverse()
+        .forEach(
+            function(item) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "package-card";
+
+
+                card.style.marginBottom =
+                    "20px";
+
+
+                card.innerHTML = `
+
+                    <div class="package-content">
+
+                        <h3>
+                            ${item.packageName}
+                        </h3>
+
+
+                        <p>
+                            <strong>
+                                Kode Booking:
+                            </strong>
+
+                            ${item.bookingCode}
+
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Tanggal:
+                            </strong>
+
+                            ${item.bookingDate}
+
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Durasi:
+                            </strong>
+
+                            ${item.duration}
+                            malam
+
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                BBQ:
+                            </strong>
+
+                            ${item.bbq}
+
+                        </p>
+
+
+                        <p>
+                            <strong>
+                                Total:
+                            </strong>
+
+                            ${formatRupiah(item.total)}
+
+                        </p>
+
+
+                        <p style="margin-top:10px;">
+
+                            <strong>
+                                Status:
+                            </strong>
+
+                            <span
+                                style="
+                                    color:#2f5d3a;
+                                    font-weight:bold;
+                                "
+                            >
+                                ${item.status}
+                            </span>
+
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                historyList.appendChild(
+                    card
+                );
+
+            }
+        );
+
+}
+
+
+displayHistory();
+
+</script>
+
+
+</body>
+
+</html>
