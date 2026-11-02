@@ -78,14 +78,19 @@
 
     <section class="booking-page">
 
-        <h1>
-            Form Booking
-        </h1>
+        <header class="booking-header">
+            <span class="booking-eyebrow">RESERVASI BROMO</span>
+            <h1>Rencanakan perjalananmu</h1>
+            <p>Pilih pengalaman, tentukan tanggal, lalu lihat estimasi biaya sebelum konfirmasi.</p>
+        </header>
 
-        <p>
-            Lengkapi data berikut untuk
-            melakukan reservasi camping.
-        </p>
+        <div class="booking-destination">
+            <span class="booking-destination-label">DESTINASI</span>
+            <div>
+                <strong>Gunung Bromo</strong>
+                <span class="booking-destination-region">Jawa Timur</span>
+            </div>
+        </div>
 
 
         <form
@@ -93,13 +98,15 @@
             onsubmit="submitBooking(event)"
         >
 
+            <div class="booking-fields">
+
 
             <!-- PAKET -->
 
             <div class="form-group">
 
-                <label>
-                    Paket Camping
+                <label for="packageSelect">
+                    Paket / Layanan
                 </label>
 
                 <select
@@ -117,29 +124,42 @@
 
 
 
-            <!-- TANGGAL -->
+            <!-- RENTANG TANGGAL -->
 
             <div class="form-group">
 
-                <label>
-                    Tanggal Camping
+                <label for="bookingStartDate">
+                    Tanggal Mulai
                 </label>
 
                 <input
                     type="date"
-                    id="bookingDate"
+                    id="bookingStartDate"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="bookingEndDate">
+                    Tanggal Selesai
+                </label>
+
+                <input
+                    type="date"
+                    id="bookingEndDate"
                     required
                 >
 
             </div>
 
 
-
             <!-- DURASI -->
 
-            <div class="form-group">
+            <div id="durationGroup" class="form-group">
 
-                <label>
+                <label for="duration">
                     Durasi Camping
                 </label>
 
@@ -149,10 +169,11 @@
                     min="1"
                     value="1"
                     required
+                    readonly
                 >
 
                 <small>
-                    Jumlah malam
+                    Durasi malam dihitung otomatis dari tanggal booking.
                 </small>
 
             </div>
@@ -161,9 +182,9 @@
 
             <!-- BBQ -->
 
-            <div class="form-group">
+            <div id="bbqGroup" class="form-group">
 
-                <label>
+                <label for="bbqSelect">
                     Pilihan BBQ
                 </label>
 
@@ -197,31 +218,46 @@
 
             </div>
 
+            </div>
+
 
 
             <!-- TOTAL -->
 
-            <div class="booking-summary">
+            <aside class="booking-checkout">
 
-                <h3>
-                    Ringkasan Booking
-                </h3>
+                <div class="booking-summary">
+
+                    <span class="booking-summary-label">RINGKASAN BIAYA</span>
+                    <h2>Estimasi booking</h2>
 
 
-                <div class="summary-row">
+                    <div class="summary-row">
 
-                    <span>
-                        Harga Camping
+                    <span id="campPriceLabel">
+                        Harga Paket
                     </span>
 
                     <strong id="campPrice">
                         Rp0
                     </strong>
 
-                </div>
+                    </div>
+
+                    <div class="summary-row">
+
+                    <span>
+                        Tanggal Booking
+                    </span>
+
+                    <strong id="summaryDateRange">
+                        Pilih tanggal
+                    </strong>
+
+                    </div>
 
 
-                <div class="summary-row">
+                    <div class="summary-row" id="bbqPriceRow">
 
                     <span>
                         Harga BBQ
@@ -231,10 +267,10 @@
                         Rp0
                     </strong>
 
-                </div>
+                    </div>
 
 
-                <div class="summary-row total">
+                    <div class="summary-row total">
 
                     <span>
                         Total
@@ -244,23 +280,123 @@
                         Rp0
                     </strong>
 
+                    </div>
+
+                    <fieldset class="payment-method">
+                        <legend class="payment-method-title">Pilih Metode Pembayaran</legend>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="QRIS" checked>
+                            <span class="payment-option-icon qris" aria-hidden="true">QR</span>
+                            <span>
+                                <strong>QRIS</strong>
+                                <small>Admin akan mengirim QR pembayaran resmi setelah pesanan dibuat.</small>
+                            </span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="Transfer Bank">
+                            <span class="payment-option-icon bank" aria-hidden="true">TF</span>
+                            <span>
+                                <strong>Transfer Bank</strong>
+                                <small>Informasi rekening dikirim admin setelah pesanan dibuat.</small>
+                            </span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="Cash di Lokasi">
+                            <span class="payment-option-icon cash" aria-hidden="true">Rp</span>
+                            <span>
+                                <strong>Cash di Lokasi</strong>
+                                <small>Bayar tunai kepada petugas saat check-in.</small>
+                            </span>
+                        </label>
+                    </fieldset>
+
                 </div>
 
-            </div>
 
 
+                <button
+                    type="submit"
+                    class="btn-primary booking-submit"
+                >
 
-            <button
-                type="submit"
-                class="btn-primary"
-            >
+                    Buat Pesanan
 
-                Konfirmasi Booking
+                </button>
 
-            </button>
+                <p class="booking-secure-note">Detail pembayaran QRIS dan transfer akan diberikan admin. Pembayaran tunai dilakukan saat check-in.</p>
 
+            </aside>
 
         </form>
+
+        <section id="transactionPanel" class="transaction-panel" hidden aria-live="polite">
+            <header class="transaction-header">
+                <span class="transaction-success-mark" aria-hidden="true">&#10003;</span>
+                <div>
+                    <span class="booking-eyebrow">BUKTI PEMESANAN</span>
+                    <h2>Pesanan berhasil dibuat</h2>
+                    <p>Simpan kode booking ini dan tunjukkan kepada admin saat pembayaran atau check-in.</p>
+                </div>
+            </header>
+
+            <div class="transaction-layout">
+                <article class="transaction-card">
+                    <div class="transaction-card-heading">
+                        <div>
+                            <span class="transaction-label">KODE BOOKING</span>
+                            <h3 id="transactionBookingCode">-</h3>
+                        </div>
+                        <span id="transactionPaymentStatus" class="payment-status-badge">Menunggu Pembayaran</span>
+                    </div>
+
+                    <div class="transaction-detail-grid">
+                        <div>
+                            <span class="transaction-label">Nama Pemesan</span>
+                            <strong id="transactionCustomer">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">Paket</span>
+                            <strong id="transactionPackage">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">Tanggal</span>
+                            <strong id="transactionDates">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">Durasi</span>
+                            <strong id="transactionDuration">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">BBQ</span>
+                            <strong id="transactionBbq">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">Metode Pembayaran</span>
+                            <strong id="transactionMethod">-</strong>
+                        </div>
+                        <div>
+                            <span class="transaction-label">Catatan</span>
+                            <strong id="transactionNotes">Tidak ada</strong>
+                        </div>
+                    </div>
+
+                    <div class="transaction-costs">
+                        <div><span>Harga paket</span><strong id="transactionPackagePrice">-</strong></div>
+                        <div><span>BBQ</span><strong id="transactionBbqPrice">-</strong></div>
+                        <div class="transaction-total"><span>Total pembayaran</span><strong id="transactionTotal">-</strong></div>
+                    </div>
+
+                </article>
+
+                <aside class="payment-instructions">
+                    <span id="paymentInstructionTag" class="payment-instruction-tag">METODE PEMBAYARAN</span>
+                    <h3 id="paymentInstructionTitle">Instruksi Pembayaran</h3>
+                    <p class="payment-amount" id="paymentAmount">-</p>
+                    <p id="paymentInstructionText" class="payment-disclaimer"></p>
+                    <a class="transaction-history-link" href="history.html">Lihat riwayat transaksi</a>
+                </aside>
+            </div>
+        </section>
 
     </section>
 

@@ -153,8 +153,8 @@ function loadStatistics() {
                 function(item) {
 
                     return (
-                        item.status !==
-                        "Dibatalkan"
+                        item.status !== "Dibatalkan" &&
+                        item.paymentStatus === "Lunas"
                     );
 
                 }
@@ -259,6 +259,11 @@ function loadBookings() {
                         "tr"
                     );
 
+                const bookingDateRange =
+                    booking.bookingDateStart && booking.bookingDateEnd
+                        ? booking.bookingDateStart + " sampai " + booking.bookingDateEnd
+                        : booking.bookingDate;
+
 
                 row.innerHTML = `
 
@@ -293,7 +298,7 @@ function loadBookings() {
 
                     <td>
 
-                        ${booking.bookingDate}
+                        ${bookingDateRange}
 
                     </td>
 
@@ -301,7 +306,7 @@ function loadBookings() {
                     <td>
 
                         ${booking.duration}
-                        malam
+                        ${booking.durationUnit || "malam"}
 
                     </td>
 
@@ -327,6 +332,13 @@ function loadBookings() {
                             ${booking.status}
 
                         </span>
+
+                        <br>
+
+                        <small class="admin-payment-info">
+                            Pembayaran: ${booking.paymentStatus || "Belum ada data"}
+                            ${booking.paymentMethod ? " · " + booking.paymentMethod : ""}
+                        </small>
 
                     </td>
 
@@ -394,6 +406,41 @@ function loadBookings() {
 
                         </select>
 
+                        <select
+                            class="action-select payment-action-select"
+                            aria-label="Ubah status pembayaran untuk ${booking.bookingCode}"
+                            onchange="
+                                updatePaymentStatus(
+                                    ${booking.id},
+                                    this.value
+                                )
+                            "
+                        >
+
+                            <option value="">
+                                Status Pembayaran
+                            </option>
+
+                            <option
+                                value="Menunggu Pembayaran"
+                                ${(booking.paymentStatus || "Menunggu Pembayaran") === "Menunggu Pembayaran"
+                                    ? "selected"
+                                    : ""}
+                            >
+                                Menunggu Pembayaran
+                            </option>
+
+                            <option
+                                value="Lunas"
+                                ${booking.paymentStatus === "Lunas"
+                                    ? "selected"
+                                    : ""}
+                            >
+                                Lunas
+                            </option>
+
+                        </select>
+
 
                         <button
                             class="btn-delete"
@@ -419,6 +466,42 @@ function loadBookings() {
 
     loadStatistics();
 
+}
+
+
+function updatePaymentStatus(bookingId, newStatus) {
+    if (!["Menunggu Pembayaran", "Lunas"].includes(newStatus)) {
+        return;
+    }
+
+    const bookings =
+        JSON.parse(localStorage.getItem("camprent_bookings")) || [];
+    const booking = bookings.find(item => item.id === bookingId);
+
+    if (!booking) {
+        alert("Booking tidak ditemukan.");
+        loadBookings();
+        return;
+    }
+
+    if (
+        newStatus === "Lunas" &&
+        !confirm(`Konfirmasi pembayaran ${booking.bookingCode} sudah benar-benar diterima?`)
+    ) {
+        loadBookings();
+        return;
+    }
+
+    booking.paymentStatus = newStatus;
+    if (newStatus === "Lunas") {
+        booking.paidAt = new Date().toISOString();
+    } else {
+        delete booking.paidAt;
+    }
+
+    localStorage.setItem("camprent_bookings", JSON.stringify(bookings));
+    loadBookings();
+    alert("Status pembayaran berhasil diperbarui.");
 }
 
 
@@ -786,7 +869,7 @@ function loadPackages() {
                                 item.price
                             )}
                         </strong>
-                        / malam
+                        / ${item.billingUnit === "trip" ? "perjalanan" : "malam"}
 
                     </p>
 

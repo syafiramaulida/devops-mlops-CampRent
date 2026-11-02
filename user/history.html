@@ -76,7 +76,7 @@
         </h1>
 
         <p style="color:#777; margin:10px 0 30px;">
-            Daftar reservasi camping yang pernah kamu buat.
+            Daftar booking yang pernah kamu buat.
         </p>
 
 
@@ -179,106 +179,82 @@ function displayHistory() {
         .forEach(
             function(item) {
 
-                const card =
-                    document.createElement(
-                        "div"
-                    );
+                const bookingDateRange =
+                    item.bookingDateStart && item.bookingDateEnd
+                        ? item.bookingDateStart + " sampai " + item.bookingDateEnd
+                        : item.bookingDate;
 
+                const card = document.createElement("article");
+                card.className = "transaction-history-card";
 
-                card.className =
-                    "package-card";
+                const header = document.createElement("div");
+                header.className = "transaction-history-header";
 
+                const titleGroup = document.createElement("div");
+                const title = document.createElement("h2");
+                title.textContent = item.packageName;
+                const code = document.createElement("span");
+                code.className = "transaction-history-code";
+                code.textContent = `Kode booking: ${item.bookingCode}`;
+                titleGroup.append(title, code);
 
-                card.style.marginBottom =
-                    "20px";
+                const statuses = document.createElement("div");
+                statuses.className = "transaction-history-statuses";
+                const bookingStatus = document.createElement("span");
+                bookingStatus.className = "history-status-badge";
+                bookingStatus.textContent = `Booking: ${item.status}`;
+                const paymentStatus = document.createElement("span");
+                paymentStatus.className = "history-status-badge payment";
+                paymentStatus.textContent = `Pembayaran: ${item.paymentStatus || "Belum ada data"}`;
+                if (item.paymentStatus === "Lunas") {
+                    paymentStatus.classList.add("is-paid");
+                }
+                statuses.append(bookingStatus, paymentStatus);
+                header.append(titleGroup, statuses);
 
+                const details = document.createElement("div");
+                details.className = "transaction-history-details";
+                [
+                    ["Tanggal kegiatan", bookingDateRange],
+                    ["Durasi", `${item.duration} ${item.durationUnit || "malam"}`],
+                    ["BBQ", item.bbq || "Tidak ada"],
+                    ["Metode pembayaran", item.paymentMethod || "Belum dipilih"]
+                ].forEach(([label, value]) => {
+                    const detail = document.createElement("div");
+                    const detailLabel = document.createElement("span");
+                    detailLabel.textContent = label;
+                    const detailValue = document.createElement("strong");
+                    detailValue.textContent = value;
+                    detail.append(detailLabel, detailValue);
+                    details.appendChild(detail);
+                });
 
-                card.innerHTML = `
+                const costs = document.createElement("div");
+                costs.className = "transaction-history-costs";
+                [
+                    ["Harga paket", item.campPrice],
+                    ["BBQ", item.bbqPrice]
+                ].forEach(([label, amount]) => {
+                    const row = document.createElement("div");
+                    const rowLabel = document.createElement("span");
+                    rowLabel.textContent = label;
+                    const rowAmount = document.createElement("strong");
+                    rowAmount.textContent = formatRupiah(Number(amount) || 0);
+                    row.append(rowLabel, rowAmount);
+                    costs.appendChild(row);
+                });
 
-                    <div class="package-content">
+                const total = document.createElement("div");
+                total.className = "transaction-history-total";
+                const totalLabel = document.createElement("span");
+                totalLabel.textContent = "Total transaksi";
+                const totalAmount = document.createElement("strong");
+                totalAmount.textContent = formatRupiah(item.total);
+                total.append(totalLabel, totalAmount);
+                costs.appendChild(total);
 
-                        <h3>
-                            ${item.packageName}
-                        </h3>
-
-
-                        <p>
-                            <strong>
-                                Kode Booking:
-                            </strong>
-
-                            ${item.bookingCode}
-
-                        </p>
-
-
-                        <p>
-                            <strong>
-                                Tanggal:
-                            </strong>
-
-                            ${item.bookingDate}
-
-                        </p>
-
-
-                        <p>
-                            <strong>
-                                Durasi:
-                            </strong>
-
-                            ${item.duration}
-                            malam
-
-                        </p>
-
-
-                        <p>
-                            <strong>
-                                BBQ:
-                            </strong>
-
-                            ${item.bbq}
-
-                        </p>
-
-
-                        <p>
-                            <strong>
-                                Total:
-                            </strong>
-
-                            ${formatRupiah(item.total)}
-
-                        </p>
-
-
-                        <p style="margin-top:10px;">
-
-                            <strong>
-                                Status:
-                            </strong>
-
-                            <span
-                                style="
-                                    color:#2f5d3a;
-                                    font-weight:bold;
-                                "
-                            >
-                                ${item.status}
-                            </span>
-
-                        </p>
-
-                    </div>
-
-                `;
-
-
-                historyList.appendChild(
-                    card
-                );
-
+                card.append(header, details, costs);
+                historyList.appendChild(card);
             }
         );
 

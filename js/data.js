@@ -37,7 +37,7 @@ const defaultPackages = [
         price: 95000,
         capacity: 1,
         description: "Paket camping untuk satu orang.",
-        image: "img/f1.png",
+        image: "img/OIP (2).jpg",
         status: "active"
     },
 
@@ -47,7 +47,7 @@ const defaultPackages = [
         price: 150000,
         capacity: 2,
         description: "Paket camping ekonomis untuk dua orang.",
-        image: "img/f3.png",
+        image: "img/OIP.jpg",
         status: "active"
     },
 
@@ -57,7 +57,7 @@ const defaultPackages = [
         price: 350000,
         capacity: 2,
         description: "Paket camping dengan pengalaman menikmati sunrise.",
-        image: "img/f4.png",
+        image: "img/OIP (1).jpg",
         status: "active"
     },
 
@@ -79,6 +79,17 @@ const defaultPackages = [
         description: "Paket camping keluarga dengan fasilitas lengkap.",
         image: "img/OIP (1).jpg",
         status: "active"
+    },
+
+    {
+        id: 6,
+        name: "Jeep Sunrise Bromo",
+        price: 650000,
+        capacity: 4,
+        description: "Tur jeep sunrise di Bromo untuk maksimal 4 orang. Tidak termasuk paket camping.",
+        image: "img/OIP (2).jpg",
+        status: "active",
+        billingUnit: "trip"
     }
 
 ];
@@ -138,6 +149,89 @@ function initializeData() {
         localStorage.setItem(
             "camprent_packages",
             JSON.stringify(defaultPackages)
+        );
+
+    }
+
+
+    const storedPackages =
+        JSON.parse(
+            localStorage.getItem("camprent_packages")
+        ) || [];
+
+    let packagesUpdated = false;
+
+    storedPackages.forEach(function(item) {
+
+        if (item.image === "img/f1.png") {
+
+            item.image = "img/OIP (2).jpg";
+            packagesUpdated = true;
+
+        } else if (item.image === "img/f3.png") {
+
+            item.image = "img/OIP.jpg";
+            packagesUpdated = true;
+
+        } else if (item.image === "img/f4.png") {
+
+            item.image = "img/OIP (1).jpg";
+            packagesUpdated = true;
+
+        }
+
+    });
+
+    const jeepPackage = defaultPackages.find(function(packageItem) {
+
+        return packageItem.name === "Jeep Sunrise Bromo";
+
+    });
+
+    const legacyJeepPackage = storedPackages.find(function(packageItem) {
+
+        return packageItem.name === "Camping + Jeep Sunrise Bromo";
+
+    });
+
+    if (legacyJeepPackage && jeepPackage) {
+
+        legacyJeepPackage.name = jeepPackage.name;
+        legacyJeepPackage.price = jeepPackage.price;
+        legacyJeepPackage.capacity = jeepPackage.capacity;
+        legacyJeepPackage.description = jeepPackage.description;
+        legacyJeepPackage.image = jeepPackage.image;
+        legacyJeepPackage.billingUnit = jeepPackage.billingUnit;
+        packagesUpdated = true;
+
+    }
+
+    if (jeepPackage && !storedPackages.some(function(packageItem) {
+
+        return packageItem.name === jeepPackage.name;
+
+    })) {
+
+        const nextPackageId = storedPackages.reduce(function(maximumId, packageItem) {
+
+            return Math.max(maximumId, Number(packageItem.id) || 0);
+
+        }, 0) + 1;
+
+        storedPackages.push({
+            ...jeepPackage,
+            id: nextPackageId
+        });
+
+        packagesUpdated = true;
+
+    }
+
+    if (packagesUpdated) {
+
+        localStorage.setItem(
+            "camprent_packages",
+            JSON.stringify(storedPackages)
         );
 
     }
